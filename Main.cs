@@ -1,15 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Diagnostics;
-using System.IO;
-using System.Security;
 
 
 namespace ServicesApp
@@ -39,10 +36,8 @@ namespace ServicesApp
                 File.Create("helpingFiles/servicesName.csv").Close();
                 services = new string[] { };
             }
-           
+            this.ActiveControl = null;
             this.Size = new Size(800, 550);
-
-
         }
 
         private void checkAndAppendButtons(string service)
@@ -58,12 +53,23 @@ namespace ServicesApp
                 bt.FlatAppearance.BorderSize = 2;
                 bt.Size = new Size(100, 40);
                 bt.Location = new Point(locationButton[0], locationButton[1]);
-                
 
-                if (getService.Contains("STOPPED")) bt.BackColor = Color.Red;
-                else bt.BackColor = Color.Lime;
 
-                bt.Click += buttonClick;
+                if (getService.Contains("STOPPED"))
+                {
+                    bt.BackColor = Color.Red;
+                    bt.FlatAppearance.MouseOverBackColor = Color.DarkRed;
+                    bt.FlatAppearance.MouseDownBackColor = Color.Crimson;
+                }
+                else
+                {
+                    bt.BackColor = Color.Lime;
+                    bt.FlatAppearance.MouseOverBackColor = Color.Green;
+                    bt.FlatAppearance.MouseDownBackColor = Color.LimeGreen;
+                }
+
+
+                    bt.Click += buttonClick;
 
                 this.Controls.Add(bt);
                 allButtons.Add(bt);
@@ -114,20 +120,22 @@ namespace ServicesApp
         private void buttonClick(object sender, EventArgs e)
         {
             Button bt = (Button)sender;
-            if (bt.IsDisposed) return;
+            if (this.IsDisposed) return;
             string service = bt.Text;
             string output;
             if (bt.BackColor == Color.Lime)
             {
                 output = correctCommand("cmd", $@"/c net stop {service}");
                 bt.BackColor = Color.Red;
-               
+                bt.FlatAppearance.MouseOverBackColor = Color.DarkRed;
+                bt.FlatAppearance.MouseDownBackColor = Color.Crimson;
             }
             else
             {
                 output = correctCommand("cmd", $@"/c net start {service}");
                 bt.BackColor = Color.Lime;
-                
+                bt.FlatAppearance.MouseOverBackColor = Color.Green;
+                bt.FlatAppearance.MouseDownBackColor = Color.LimeGreen;
             }
   
             resultsCommands.Text += "\n" + output + "----------\n";
@@ -143,16 +151,6 @@ namespace ServicesApp
             {
                 this.Size = new Size(800, 550);
             }
-        }
-
-        private void resultsCommands_TextChanged(object sender, EventArgs e)
-        {
-           
-        }
-
-        private void resultsCommands_Leave(object sender, EventArgs e)
-        {
-           
         }
 
         private void inputServices_Leave(object sender, EventArgs e)
@@ -181,11 +179,31 @@ namespace ServicesApp
                 }
                 oldInputServicesText = inputServices.Text;
             }
+            else
+            {
+                foreach (Button bt in allButtons)
+                {
+                    if (bt.BackColor == Color.DarkRed) bt.BackColor = Color.Red;
+                    else bt.BackColor = Color.Lime;
+                    bt.Enabled = true;
+                }
+            }
+
         }
 
         private void Main_MouseClick(object sender, MouseEventArgs e)
         {
             this.ActiveControl = null;
+        }
+
+        private void inputServices_Enter(object sender, EventArgs e)
+        {
+            foreach (Button bt in allButtons)
+            {
+                if (bt.BackColor == Color.Red) bt.BackColor = Color.DarkRed;
+                else bt.BackColor = Color.Green;
+                bt.Enabled = false;
+            }
         }
     }
 }

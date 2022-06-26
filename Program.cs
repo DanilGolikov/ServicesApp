@@ -16,13 +16,8 @@ namespace ServicesApp
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            
-            try
-            {
-                Application.Run(new Main());
-            }
-            catch (ObjectDisposedException) { Application.Run(new Main()); }
 
+            Application.Run(new Main());
         }
     }
 }

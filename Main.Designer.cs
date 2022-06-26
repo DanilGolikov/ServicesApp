@@ -45,8 +45,6 @@
             this.resultsCommands.Size = new System.Drawing.Size(432, 426);
             this.resultsCommands.TabIndex = 1;
             this.resultsCommands.Text = "";
-            this.resultsCommands.TextChanged += new System.EventHandler(this.resultsCommands_TextChanged);
-            this.resultsCommands.Leave += new System.EventHandler(this.resultsCommands_Leave);
             // 
             // inputServices
             // 
@@ -58,6 +56,7 @@
             this.inputServices.Size = new System.Drawing.Size(210, 426);
             this.inputServices.TabIndex = 2;
             this.inputServices.Text = "";
+            this.inputServices.Enter += new System.EventHandler(this.inputServices_Enter);
             this.inputServices.Leave += new System.EventHandler(this.inputServices_Leave);
             // 
             // seeCommandResult
