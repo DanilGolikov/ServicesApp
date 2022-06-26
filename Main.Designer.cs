@@ -38,6 +38,8 @@
             // 
             this.resultsCommands.AcceptsTab = true;
             this.resultsCommands.AutoWordSelection = true;
+            this.resultsCommands.BackColor = System.Drawing.Color.DarkGray;
+            this.resultsCommands.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.resultsCommands.Location = new System.Drawing.Point(819, 12);
             this.resultsCommands.Name = "resultsCommands";
             this.resultsCommands.Size = new System.Drawing.Size(432, 426);
@@ -48,7 +50,9 @@
             // 
             // inputServices
             // 
-            this.inputServices.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.inputServices.BackColor = System.Drawing.Color.DarkGray;
+            this.inputServices.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.inputServices.Font = new System.Drawing.Font("Segoe UI Semibold", 14F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.inputServices.Location = new System.Drawing.Point(548, 12);
             this.inputServices.Name = "inputServices";
             this.inputServices.Size = new System.Drawing.Size(210, 426);
@@ -80,6 +84,7 @@
             this.Name = "Main";
             this.Text = "ServiceApp";
             this.Load += new System.EventHandler(this.Form1_Load);
+            this.MouseClick += new System.Windows.Forms.MouseEventHandler(this.Main_MouseClick);
             this.ResumeLayout(false);
             this.PerformLayout();
 

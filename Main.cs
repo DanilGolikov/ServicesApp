@@ -28,8 +28,18 @@ namespace ServicesApp
         {
             InitializeComponent();
             var exePath = AppDomain.CurrentDomain.BaseDirectory;
-            services = File.ReadAllLines("helpingFiles/servicesName.csv");
-            services = services.Where(x => !string.IsNullOrWhiteSpace(x)).ToArray();
+            if (File.Exists("helpingFiles/servicesName.csv"))
+            {
+                services = File.ReadAllLines("helpingFiles/servicesName.csv");
+                services = services.Where(x => !string.IsNullOrWhiteSpace(x)).ToArray();
+            }
+            else
+            {
+                Directory.CreateDirectory("helpingFiles");
+                File.Create("helpingFiles/servicesName.csv").Close();
+                services = new string[] { };
+            }
+           
             this.Size = new Size(800, 550);
 
 
@@ -61,7 +71,7 @@ namespace ServicesApp
                 
 
                 locationButton[1] += 50;
-                if (allButtons.Count() % 5 == 0) { locationButton[0] += 140; locationButton[1] = 20; };
+                if (allButtons.Count() % 8 == 0) { locationButton[0] += 140; locationButton[1] = 20; };
             }
         }
 
@@ -104,6 +114,7 @@ namespace ServicesApp
         private void buttonClick(object sender, EventArgs e)
         {
             Button bt = (Button)sender;
+            if (bt.IsDisposed) return;
             string service = bt.Text;
             string output;
             if (bt.BackColor == Color.Lime)
@@ -148,14 +159,21 @@ namespace ServicesApp
         {
             if (inputServices.Text != oldInputServicesText)
             {
-                File.WriteAllText("helpingFiles/servicesName.csv", inputServices.Text);
                 services = inputServices.Text.Split('\n');
                 services = services.Where(x => !string.IsNullOrWhiteSpace(x)).ToArray();
+                services = services.Distinct().ToArray();
+                File.WriteAllLines("helpingFiles/servicesName.csv", services);
                 inputServices.Clear();
-                if (services.Length == 0) return ;
                 locationButton = new int[] { 20, 20 };
-                foreach (Button bt in allButtons) bt.Dispose();
 
+                try
+                {
+                    foreach (Button bt in allButtons) bt.Dispose();
+                    allButtons.Clear();
+                }
+                catch (InvalidOperationException) { }
+
+                if (services.Length == 0) return;
                 foreach (string service in services)
                 {
                     
@@ -163,6 +181,11 @@ namespace ServicesApp
                 }
                 oldInputServicesText = inputServices.Text;
             }
+        }
+
+        private void Main_MouseClick(object sender, MouseEventArgs e)
+        {
+            this.ActiveControl = null;
         }
     }
 }
