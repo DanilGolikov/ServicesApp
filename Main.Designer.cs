@@ -32,6 +32,7 @@
             this.resultsCommands = new System.Windows.Forms.RichTextBox();
             this.inputServices = new System.Windows.Forms.RichTextBox();
             this.seeCommandResult = new System.Windows.Forms.CheckBox();
+            this.RefreshButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // resultsCommands
@@ -56,6 +57,7 @@
             this.inputServices.Size = new System.Drawing.Size(210, 426);
             this.inputServices.TabIndex = 2;
             this.inputServices.Text = "";
+            this.inputServices.WordWrap = false;
             this.inputServices.Enter += new System.EventHandler(this.inputServices_Enter);
             this.inputServices.Leave += new System.EventHandler(this.inputServices_Leave);
             // 
@@ -64,11 +66,21 @@
             this.seeCommandResult.AutoSize = true;
             this.seeCommandResult.Location = new System.Drawing.Point(12, 482);
             this.seeCommandResult.Name = "seeCommandResult";
-            this.seeCommandResult.Size = new System.Drawing.Size(168, 17);
+            this.seeCommandResult.Size = new System.Drawing.Size(144, 17);
             this.seeCommandResult.TabIndex = 3;
-            this.seeCommandResult.Text = "Показывать вывод команд";
+            this.seeCommandResult.Text = "Show command output";
             this.seeCommandResult.UseVisualStyleBackColor = true;
             this.seeCommandResult.CheckedChanged += new System.EventHandler(this.seeCommandResult_CheckedChanged);
+            // 
+            // RefreshButton
+            // 
+            this.RefreshButton.Location = new System.Drawing.Point(548, 445);
+            this.RefreshButton.Name = "RefreshButton";
+            this.RefreshButton.Size = new System.Drawing.Size(104, 35);
+            this.RefreshButton.TabIndex = 4;
+            this.RefreshButton.Text = "Refresh";
+            this.RefreshButton.UseVisualStyleBackColor = true;
+            this.RefreshButton.Click += new System.EventHandler(this.RefreshButton_Click);
             // 
             // Main
             // 
@@ -76,6 +88,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ControlDarkDark;
             this.ClientSize = new System.Drawing.Size(1284, 511);
+            this.Controls.Add(this.RefreshButton);
             this.Controls.Add(this.seeCommandResult);
             this.Controls.Add(this.inputServices);
             this.Controls.Add(this.resultsCommands);
@@ -93,6 +106,7 @@
         private System.Windows.Forms.RichTextBox resultsCommands;
         private System.Windows.Forms.RichTextBox inputServices;
         private System.Windows.Forms.CheckBox seeCommandResult;
+        private System.Windows.Forms.Button RefreshButton;
     }
 }
 

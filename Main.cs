@@ -39,11 +39,46 @@ namespace ServicesApp
             this.ActiveControl = null;
             this.Size = new Size(800, 550);
         }
+        private void refreshFunc(bool refreshClick=false)
+        {
+            if (inputServices.Text != oldInputServicesText || refreshClick)
+            {
+                services = inputServices.Text.Split('\n');
+                services = services.Where(x => !string.IsNullOrWhiteSpace(x)).ToArray();
+                services = services.Distinct().ToArray();
+                File.WriteAllLines("helpingFiles/servicesName.csv", services);
+                inputServices.Clear();
+                locationButton = new int[] { 20, 20 };
+
+                try
+                {
+                    foreach (Button bt in allButtons) bt.Dispose();
+                    allButtons.Clear();
+                }
+                catch (InvalidOperationException) { }
+
+                if (services.Length == 0) return;
+                foreach (string service in services)
+                {
+
+                    checkAndAppendButtons(service);
+                }
+                oldInputServicesText = inputServices.Text;
+            }
+            else
+            {
+                foreach (Button bt in allButtons)
+                {
+                    if (bt.BackColor == Color.DarkRed) bt.BackColor = Color.Red;
+                    else bt.BackColor = Color.Lime;
+                    bt.Enabled = true;
+                }
+            }
+        }
 
         private void checkAndAppendButtons(string service)
         {
-            string getService = correctCommand("cmd", $@"/c sc query {service}");
-            resultsCommands.Text += "\n" + getService + "----------\n";
+            string getService = correctCommand("cmd", $@"sc query {service}");
             inputServices.Text += service + "\n";
             if (!(getService.Contains("Указанная служба не установлена.")))
             {
@@ -88,7 +123,7 @@ namespace ServicesApp
 
             Process process = new Process();
             process.StartInfo.FileName = nameApp;
-            process.StartInfo.Arguments = Com;
+            process.StartInfo.Arguments = @"/c " + Com;
             process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
             process.StartInfo.UseShellExecute = false;
            
@@ -103,7 +138,10 @@ namespace ServicesApp
 
             Console.Read();
 
-            return utf.GetString(Encoding.Convert(win, utf, utf.GetBytes(output)));
+            string res = utf.GetString(Encoding.Convert(win, utf, utf.GetBytes($"\n>{Com}\n{output}--------------------\n")));
+            resultsCommands.Text += res;
+
+            return res;
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -125,20 +163,20 @@ namespace ServicesApp
             string output;
             if (bt.BackColor == Color.Lime)
             {
-                output = correctCommand("cmd", $@"/c net stop {service}");
+                output = correctCommand("cmd", $@"net stop {service}");
                 bt.BackColor = Color.Red;
                 bt.FlatAppearance.MouseOverBackColor = Color.DarkRed;
                 bt.FlatAppearance.MouseDownBackColor = Color.Crimson;
             }
             else
             {
-                output = correctCommand("cmd", $@"/c net start {service}");
+                output = correctCommand("cmd", $@"net start {service}");
                 bt.BackColor = Color.Lime;
                 bt.FlatAppearance.MouseOverBackColor = Color.Green;
                 bt.FlatAppearance.MouseDownBackColor = Color.LimeGreen;
             }
   
-            resultsCommands.Text += "\n" + output + "----------\n";
+           
         }
 
         private void seeCommandResult_CheckedChanged(object sender, EventArgs e)
@@ -155,40 +193,8 @@ namespace ServicesApp
 
         private void inputServices_Leave(object sender, EventArgs e)
         {
-            if (inputServices.Text != oldInputServicesText)
-            {
-                services = inputServices.Text.Split('\n');
-                services = services.Where(x => !string.IsNullOrWhiteSpace(x)).ToArray();
-                services = services.Distinct().ToArray();
-                File.WriteAllLines("helpingFiles/servicesName.csv", services);
-                inputServices.Clear();
-                locationButton = new int[] { 20, 20 };
-
-                try
-                {
-                    foreach (Button bt in allButtons) bt.Dispose();
-                    allButtons.Clear();
-                }
-                catch (InvalidOperationException) { }
-
-                if (services.Length == 0) return;
-                foreach (string service in services)
-                {
-                    
-                    checkAndAppendButtons(service);
-                }
-                oldInputServicesText = inputServices.Text;
-            }
-            else
-            {
-                foreach (Button bt in allButtons)
-                {
-                    if (bt.BackColor == Color.DarkRed) bt.BackColor = Color.Red;
-                    else bt.BackColor = Color.Lime;
-                    bt.Enabled = true;
-                }
-            }
-
+            refreshFunc();
+            RefreshButton.Enabled = true;
         }
 
         private void Main_MouseClick(object sender, MouseEventArgs e)
@@ -204,6 +210,12 @@ namespace ServicesApp
                 else bt.BackColor = Color.Green;
                 bt.Enabled = false;
             }
+            RefreshButton.Enabled = false;
+        }
+
+        private void RefreshButton_Click(object sender, EventArgs e)
+        {
+            refreshFunc(true);
         }
     }
 }
